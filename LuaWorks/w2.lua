@@ -9,29 +9,32 @@ module(..., package.seeall)
 
 -- example function
 local function example(x)
-	local varY = (2 * x / 4) + 5
+	local varY = 2*x
 	return varY
 end
 
--- write your own function here
---
-
-
+-- example function
+local function brian(f)
+   local varY = (2*f / (3*10)) 
+   return varY
+end
 
 run = function()
 
 	-- calculate example and put result
-   local eg1 = example(8)
-   local eg2 = example(16)
-   local eg3 = example(32)
+   local eg1 = example(23)
+   local eg2 = example(27)
+   local eg3 = example(42)
 
    -- these two dots .. is telling iphone to concatenate the text 
    -- so, print("first" .. ", " .. " second") would put "first, second" on screen
    WorkPad1:setText(eg1 .. ", " .. eg2 .. ", " .. eg3)
 
+   local eg1 = brian(23)
+   local eg2 = brian(27)
+   local eg3 = brian(42)
    -- call your function to do calculation
-
+   WorkPad2:setText(eg1 .. ", " .. eg2 .. "," .. eg3)
    -- and put result on WorkPad2
-
 
 end
