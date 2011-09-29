@@ -16,12 +16,40 @@ local function towerStart()
 end
 
 local function towerStep1()
-	 towers["t1"]={6, 5, 4}
+	towers["t1"] = {3, 2}
+	towers["t2"] = {}
+	towers["t3"] = {1}
+end
+local function towerStep2()
+	towers["t1"] = {3}
+	towers["t2"] = {2}
+	towers["t3"] = {1}
+end
+local function towerStep3()
+	towers["t1"] = {3}
+	towers["t2"] = {2, 1}
+	towers["t3"] = {}
+end
+local function towerStep4()
+	towers["t1"] = {}
+	towers["t2"] = {2, 1}
+	towers["t3"] = {3}
+end
+local function towerStep5()
+	towers["t1"] = {1}
+	towers["t2"] = {2}
+	towers["t3"] = {3}
 end
 local function towerStep6()
-	-- homework
+	towers["t1"] = {1}
+	towers["t2"] = {}
+	towers["t3"] = {3, 2}
 end
-
+local function towerStep7()
+	towers["t1"] = {}
+	towers["t2"] = {}
+	towers["t3"] = {3, 2, 1}
+end
 run = function()
 	WorkPad1:setText("start is on worktable 1-3")
 	WorkPad2:setText("step1 is on worktable 4-6")
