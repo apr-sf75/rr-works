@@ -16,9 +16,8 @@ local function towerStart()
 end
 
 local function towerStep1()
-	-- homework
+	 towers["t1"]={6, 5, 4}
 end
-
 local function towerStep6()
 	-- homework
 end
