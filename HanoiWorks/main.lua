@@ -29,27 +29,27 @@ local function setup()
 		sticks[i] = display.newImage( "stick.png" )
 		sticks[i].x = 80+160*(i-1); sticks[i].y = 142
 		physics.addBody( sticks[i], "static", { isSensor = true  } )
-	
+		
 		sticks[i].collision = hanoiDrag.stickCollision
 		sticks[i]:addEventListener( "collision", sticks[i] )
 		sticks[i].myName = "stick"..i
 	end
 	
 	local plate = display.newImage( "plate.png" )
-	plate.x = 80; plate.y = 200
+	plate.x = 80; plate.y = 250
 	physics.addBody( plate, { density=1.0, bounce=0.2 } )
 	plate.isFixedRotation = true 
 	plate.myName = "plate"
 
 
 	local plate1 = display.newImage( "plate1.png" )
-	plate1.x = 80; plate.y = 200
+	plate1.x = 80; plate1.y = 150
 	physics.addBody( plate1, { density=1.0, bounce=0.2 } )
 	plate1.isFixedRotation = true 
 	plate1.myName = "plate1"
 
 	local plate2 = display.newImage( "plate2.png" )
-	plate2.x = 80; plate.y = 200
+	plate2.x = 80; plate2.y = 50
 	physics.addBody( plate2, { density=1.0, bounce=0.2 } )
 	plate2.isFixedRotation = true 
 	plate2.myName = "plate2"
