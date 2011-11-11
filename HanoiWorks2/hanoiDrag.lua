@@ -9,6 +9,7 @@ gNumOfMovements = 0
 gStartingStickIdx = 0
 gEndingStickIdx = 0
 gNumOfSteps = 0
+gLastPlate = 0
 
 -- write all the rule for valid movement as functions
 -- then drag handler should call these rules
@@ -16,6 +17,7 @@ gNumOfSteps = 0
 local function isTopPlate(plate)
 	local plateId = plate.myName
 	local stickIdx = 0
+	
 
 	-- find the stick I am in
 	for i=1,3 do
@@ -35,25 +37,20 @@ local function isTopPlate(plate)
 	end
 end
 
-
 local function isSmallerThanTop(plateId, stickIdx)
-	
-	
-	-- check corner case, empty stick?
 	local theStick = gSticks[stickIdx]
-	local thePlates = theStick.plates
-
-	if #theStick.plates == 0 then
-		return true
-	end
-
+	local plateCount = #theStick.plates
 	
-	-- check normal case, get the top plate id and compare with it
-	local theTopPlateId = thePlates[#thePlates]
-	if plateId < theTopPlateId then
+	if (plateCount == 0) then
 		return true
 	end
-    return false
+	
+	local theTopPlateId = theStick.plates[plateCount]
+	if theTopPlateId > plateId then
+		return true
+	else
+		return false
+	end
 end
 
 local function movePlateFromStickToStick(plateId, fromStickIdx, toStickIdx)
@@ -70,43 +67,40 @@ local function movePlateFromStickToStick(plateId, fromStickIdx, toStickIdx)
 	fromStick.plates[#fromStick.plates] = nil
 	toStick.plates[#toStick.plates+1] = plateId
 	
-	-- record the number of steps to judge the best result
 	gNumOfSteps = gNumOfSteps+1
+	
+	for i=1,3 do
+		print("tower ".. i .. " contain " .. 
+			(gSticks[i].plates[1] or " ") ..",".. 
+			(gSticks[i].plates[2] or " ") ..",".. 
+			(gSticks[i].plates[3] or " ")  .. 
+			" num " .. #gSticks[i].plates)
+	end
 end
 
--- alternative way to prevent player move other plates is to make them "static"
--- so, design two functions. one to enable all top plates to be dynamic
--- another to freeze all other plates during dragging
--- this is also preventing player from corrupting the game by invalid drag
-local function activateTopPlates()
-
+local function activateAllPlates()
+	-- bonus homework
 end
 
 local function freezeOtherPlate(plateId)
-
+	-- bonus homework
+	
 end
 
 local function isGameFinished()
-
-
-	
+	-- homework
 	-- conditions:
+	-- stick 1 is empty
+	-- either either 2 or either 3 is empty, i.e. all plates moved
 	if (#gSticks[1].plates == 0 and #gSticks[2].plates == 0) or (#gSticks[1].plates == 0 and #gSticks[3].plates == 0) then
 		return true
 	end
-	-- stick 1 is empty
-		
-	-- either either 2 or either 3 is empty, i.e. all plates moved
 end
+
 
 local function bestNumberOfStepsForPlates(numOfPlates)
 	-- calculate the best number
-
-	
-
-	
-
-
+	-- homework
 	-- formula, bestMove (n) =  bestMove(n-1) + 1 + bestMove(n-1) 
 	-- i.e. bestMove is by 
 		-- moving plate1..plate(N-1) to stick 2, need bestMove(N-1) steps
@@ -114,9 +108,7 @@ local function bestNumberOfStepsForPlates(numOfPlates)
 		-- then move plate1..plate(N-1) on top of plate(N) on stick3, need bestMove(N-1) steps
 	-- and bestMove(1) = 1
 	
-	-- example answer for 3 plates
 	return math.pow(2,numOfPlates) - 1
-
 end
 
 local function isBestMovement()
@@ -146,6 +138,26 @@ local function playCongradulation(isBest)
 	doneAward.x = display.contentWidth / 2
 	doneAward.y = display.contentHeight/ 2
 end
+
+
+local function recoverDynamic(obj)
+	print ("recover plate ".. obj.myName)
+	obj.bodyType = "dynamic"
+end
+
+
+local function checkCollision(event)
+    thePlate = gLastPlate
+    if (gEndingStickIdx==0) then
+        local startingStick = gSticks[gStartingStickIdx]
+		thePlate.bodyType = "static"
+		transition.to( thePlate, { time=200, x= startingStick.x, y = 280-30*#startingStick.plates, 
+									transition=easing.inQuad, onComplete=recoverDynamic} )
+		gStartingStickIdx = 0
+    end
+    
+end
+
 
 -- A basic function for dragging physics objects
 function startDrag( event )
@@ -181,8 +193,11 @@ function startDrag( event )
 			-- Switch body type back to "dynamic", unless we've marked this sprite as a platform
 			if ( not event.target.isPlatform ) then
 				event.target.bodyType = "dynamic"
+				
+				gLastPlate = event.target
+				timer.performWithDelay( 200, checkCollision )
 			end
-
+            
 		end
 	end
 
@@ -190,10 +205,6 @@ function startDrag( event )
 	return true
 end
 
-local function recoverDynamic(obj)
-	print ("recover plate ".. obj.myName)
-	obj.bodyType = "dynamic"
-end
 
 local function delayedCheckResult()
 	local done=isGameFinished()
@@ -224,13 +235,13 @@ function stickCollision( self, event )
 			transition.to( thePlate, { time=200, x= startingStick.x, y = 280-30*#startingStick.plates, 
 										transition=easing.inQuad, onComplete=recoverDynamic} )
 			gStartingStickIdx = 0
-			gEndingStickIdx=0
 		end
 
 	elseif ( event.phase == "ended" ) then
 		print( "ended stick: " .. self.myName .. " with plate " .. thePlateId )
 		if (thePlate.bodyType ~= "static") then
 			gStartingStickIdx = self.myName
+			gEndingStickIdx=0
 		end
 	end
 
